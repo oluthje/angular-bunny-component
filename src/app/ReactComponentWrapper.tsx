@@ -30,6 +30,7 @@ export class MyComponentWrapperComponent
   implements OnChanges, OnDestroy, AfterViewInit
 {
   @ViewChild(containerElementName, { static: false }) containerRef!: ElementRef;
+  private root: ReactDOMClient.Root | null = null;
 
   @Input() public counter = 10;
   @Output() public componentClick = new EventEmitter<void>();
@@ -54,12 +55,16 @@ export class MyComponentWrapperComponent
   }
 
   ngOnDestroy() {
-    ReactDOM.unmountComponentAtNode(this.containerRef.nativeElement);
+    if (this.root) {
+      this.root.unmount();
+    }
   }
 
   private render() {
-    const root = ReactDOMClient.createRoot(this.containerRef.nativeElement);
-    root.render(
+    if (!this.root) {
+      this.root = ReactDOMClient.createRoot(this.containerRef.nativeElement);
+    }
+    this.root.render(
       <div
         style={{
           maxHeight: "100vh",
@@ -68,7 +73,7 @@ export class MyComponentWrapperComponent
         }}
       >
         <Transactions
-          token="eyJraWQiOiJNbTg5Nlh0eC16M3RoSVBqQmt1SFExbGxISUYxZGlmbzgwWHdyTElrMGk4IiwiYWxnIjoiSFM1MTIifQ.eyJpc3MiOiJDbGllbnQiLCJpYXQiOjE3MzM1MDUxNzEsImp0aSI6IjFkNTU5NTViLTU5NjAtNDAwZi05Mzg1LTI0OGVlMzVmMTg3NyIsImNsaWVudF9pZCI6Ik1tODk2WHR4LXozdGhJUGpCa3VIUTFsbEhJRjFkaWZvODBYd3JMSWswaTgiLCJhdWQiOiJodHRwczovL2J1bm55LmludGVybmFsIiwiZXhwIjoxNzMzNTQxMTcxLCJzY29wZSI6ImFkbWluOnJlYWQgYWRtaW46d3JpdGUgYW5hbHl0aWNzOnJlYWQgYW5hbHl0aWNzOndyaXRlIGJpbGxpbmc6cmVhZCBiaWxsaW5nOndyaXRlIGRldmVsb3BlcjpyZWFkIGRldmVsb3Blcjp3cml0ZSBsZWdlbmRhcnk6cmVhZCBsZWdlbmRhcnk6d3JpdGUgb3BlbmlkIG93bmVyOnJlYWQgb3duZXI6d3JpdGUgcGxhdGZvcm06cmVhZCBwbGF0Zm9ybTp3cml0ZSBwb3J0YWw6cmVhZCBwb3J0YWw6d3JpdGUgcHJvZHVjdDpyZWFkIHByb2R1Y3Q6d3JpdGUgcXVvdGluZzpyZWFkIHF1b3Rpbmc6d3JpdGUgc2VjdXJpdHk6cmVhZCBzZWN1cml0eTp3cml0ZSBzdGFuZGFyZDpyZWFkIHN0YW5kYXJkOndyaXRlIHdvcmtmbG93OnJlYWQgd29ya2Zsb3c6d3JpdGUiLCJzdWIiOiJjNjEwZDkxYS1kMGQ1LTQ0MTItYmUxNi1kMzVkMjY1Zjk0YWQiLCJzdWJfdHlwZSI6IlVzZXIiLCJhY3Rvcl9kaXNwbGF5X2FzIjp7ImlkIjoxLCJ0eXBlIjoiQXBpQ2xpZW50In19._ilkFeDsxSyP8HqYQVN06rfejf55vk_kz6Xtga-KvWSD-anhG_mng-YwG5npAfNHxO9ZXjnC1xR3bjkL1A-2Og"
+          token="eyJraWQiOiJiMnhhdnVLQ3VsNEV3WU1sYkY1RTRkc09URVZWTzRZNGt2TER5TnNBQTRnIiwiYWxnIjoiSFM1MTIifQ.eyJpc3MiOiJjbGllbnQiLCJpYXQiOjE3MzY1MjM0ODcsImp0aSI6IjNmMzRhOWI5LWU5YTAtNGI2Yi04OTJlLWM1MmFiZjQ1YjgzZCIsImNsaWVudF9pZCI6ImIyeGF2dUtDdWw0RXdZTWxiRjVFNGRzT1RFVlZPNFk0a3ZMRHlOc0FBNGciLCJhdWQiOiJodHRwczovL2J1bm55LmludGVybmFsIiwiZXhwIjoxNzQwMTIzNDg3LCJzY29wZSI6ImFkbWluOnJlYWQgYWRtaW46d3JpdGUgYW5hbHl0aWNzOnJlYWQgYW5hbHl0aWNzOndyaXRlIGJpbGxpbmc6cmVhZCBiaWxsaW5nOndyaXRlIGRldmVsb3BlcjpyZWFkIGRldmVsb3Blcjp3cml0ZSBsZWdlbmRhcnk6cmVhZCBsZWdlbmRhcnk6d3JpdGUgb3BlbmlkIG93bmVyOnJlYWQgb3duZXI6d3JpdGUgcGxhdGZvcm06cmVhZCBwbGF0Zm9ybTp3cml0ZSBwb3J0YWw6cmVhZCBwb3J0YWw6d3JpdGUgcHJvZHVjdDpyZWFkIHByb2R1Y3Q6d3JpdGUgcXVvdGluZzpyZWFkIHF1b3Rpbmc6d3JpdGUgc2VjdXJpdHk6cmVhZCBzZWN1cml0eTp3cml0ZSBzdGFuZGFyZDpyZWFkIHN0YW5kYXJkOndyaXRlIHdvcmtmbG93OnJlYWQgd29ya2Zsb3c6d3JpdGUiLCJzdWIiOiJjNjEwZDkxYS1kMGQ1LTQ0MTItYmUxNi1kMzVkMjY1Zjk0YWQiLCJzdWJfdHlwZSI6IlVzZXIiLCJhY3Rvcl9kaXNwbGF5X2FzIjp7ImlkIjoxLCJ0eXBlIjoiQXBpQ2xpZW50In19.g9Nla0QqYhvSLbk5aCduVbw3zVN-jWUme-DEPClEjHYvaw_souPVZpgsLfqmsEkr4SvDLm9CqDgOJdo3rDke8A"
           apiEndpoint="https://bunny.bunny.internal"
           isMobile={false}
           useModal={true}
